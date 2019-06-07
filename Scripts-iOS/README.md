@@ -9,3 +9,9 @@
 5. Pod install (pod update if needed)
 6. Open xcworkplace, not xcodeproj
 7. Click Build
+
+Build zip file to distribute to Testflight or Hockey app:
+1. Click Product->Archive
+2. Distribute App
+3. Ad hoc, uncheck bitcode
+4. Use Automatically manage signing

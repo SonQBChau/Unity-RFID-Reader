@@ -1,7 +1,7 @@
 
 # To build iOS app from Unity
 
-1. Click build iOS
+1. In Unity, click build iOS
 2. Open the folder in xcode, auto signing and build
 
 3. If build failed, Product-> Clean Build Folder

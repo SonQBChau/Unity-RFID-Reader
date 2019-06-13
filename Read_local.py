@@ -69,7 +69,7 @@ DOT_COLORS = [  0x200000,   # red
 		0x200010 ]  # pink
 
  
-class ThreadingExample(object):
+class IdleLightThread(object):
     """ Threading example class
     The run() method will be started and it will run in the background
     until the application exits.
@@ -92,15 +92,12 @@ class ThreadingExample(object):
             #colorLoop()
             #time.sleep(self.interval)
         eyeSize = 10
-        rangeEye = LED_COUNT - eyeSize - 2
-        speedDelay = 20
+        rangeEye = LED_COUNT - eyeSize
+        speedDelay = 30
         returnDelay = 100
         i = 0
         
         while i < rangeEye:
-            #i += 1
-            #if i == rangeEye-1:
-                #i = 0 #reset it so it run forever
             if self.can_loop:
                 i = 0 if (rangeEye-1) == i else (i+1)
                 
@@ -108,10 +105,9 @@ class ThreadingExample(object):
                 colorWipe(strip, colorLess)
                 colorHigh= Color(0, 100, 0)
                 colorLow = Color (0, 10, 50)
-                strip.setPixelColor(i, colorLow)
-                for j in range(1, eyeSize+1, 1):
-                    strip.setPixelColor(i+j, colorHigh)
-                strip.setPixelColor(i+eyeSize+1, colorLow)
+                for j in range(0, eyeSize, 1):
+                    value = 5 + j* 25
+                    strip.setPixelColor(i+j, Color(value,value,value))
                 strip.show()
                 time.sleep(speedDelay/1000.0)
             else:
@@ -120,7 +116,7 @@ class ThreadingExample(object):
         #time.sleep(returnDelay/1000.0)
         
         #colorWipe(strip, Color(0,0,0))
-        time.sleep(self.interval)
+        #time.sleep(self.interval)
 
 
 
@@ -190,16 +186,25 @@ def colorBreath():
             colorWipe(strip, color)
             time.sleep(5/1000.0)
 
-def colorBreathRed():
-    """Breathing effect animation."""
-    #Fade IN
-    for k in range(100):
-        color = Color(0, k, 0)
+def redFadeOut():
+    # show light on
+    color = Color(0, 200, 0)
+    colorWipe(strip, color)
+    time.sleep(1000/1000.0)
+    # Fade OUT
+    for k in range(20, 0, -1):
+        color = Color(0, k*10, 0)
         colorWipe(strip, color)
         time.sleep(5/1000.0)
+
+def greenFadeOut():
+    # show light on
+    color = Color(200, 0, 0)
+    colorWipe(strip, color)
+    time.sleep(1000/1000.0)
     # Fade OUT
-    for k in range(100, 0, -1):
-        color = Color(0, k, 0)
+    for k in range(20, 0, -1):
+        color = Color(k*10, 0, 0)
         colorWipe(strip, color)
         time.sleep(5/1000.0)
     
@@ -241,40 +246,14 @@ def colorBounce():
     
     colorWipe(strip, Color(0,0,0))
     
-def colorLoop():
-    """Color bounce from start to end animation."""
-    eyeSize = 10
-    rangeEye = LED_COUNT - eyeSize - 2
-    speedDelay = 20
-    returnDelay = 100
-    
-    for i in range(0, rangeEye, 1):
-        print(can_loop)
-        colorLess = Color(0, 0, 0)
-        colorWipe(strip, colorLess)
-        colorHigh= Color(0, 100, 0)
-        colorLow = Color (0, 10, 50)
-        strip.setPixelColor(i, colorLow)
-        for j in range(1, eyeSize+1, 1):
-            strip.setPixelColor(i+j, colorHigh)
-        strip.setPixelColor(i+eyeSize+1, colorLow)
-        strip.show()
-        time.sleep(speedDelay/1000.0)
-            
-    time.sleep(returnDelay/1000.0)
-    
-    colorWipe(strip, Color(0,0,0))
-    
-    
     
 """
 FUNCTIONS CONTROLLER FOR PLAY
 """
 def playSuccess():
-    print ('success sound for kid....')
-    soundSuccess.play()
+    soundSuccessEmployee.play()
     playLightSuccess()
-    soundSuccess.stop()
+    soundSuccessEmployee.stop()
 
 def playSuccessEmployee():
     print ('success sound for employee...')
@@ -300,18 +279,16 @@ def playError():
 
 def playLightSuccess():
     print ('success color....')
-    theaterChaseRainbow(strip)
-    colorWipe(strip, Color(0,0,0))
+    idleLight.can_loop = False
+    greenFadeOut()
+    idleLight.can_loop = True
 
 def playLightError():
     print ('error color....')
     
-    playLightTest()
-    #for i in range(3):
-        #colorWipe(strip, Color(0, 255, 0))
-        #time.sleep(0.4)
-        #colorWipe(strip, Color(0,0,0))
-        #time.sleep(0.3)
+    idleLight.can_loop = False
+    redFadeOut()
+    idleLight.can_loop = True
 
 def playLightSuccessEmployee():
     print ('employee color....')
@@ -334,9 +311,9 @@ def playSoundTest():
     soundTest.play()
     
 def playLightTest():
-    example.can_loop = False
-    colorBreathRed()
-    example.can_loop = True
+    #example.can_loop = False
+    playLightSuccessParent()
+    #example.can_loop = True
     
     #colorLoop()
     
@@ -347,7 +324,7 @@ def updateFirebase(firebaseID):
 """
 LOOP FOR RFID READER WAITING TO BE SCANNED
 """
-example = ThreadingExample()
+idleLight = IdleLightThread()
 
 try:
     while True:
@@ -399,7 +376,7 @@ try:
             #print ("Current Screen: {}".format(currentScreen))
 
             if currentScreen == 1 or currentScreen == 18: # parent page is: 1, 18
-                    Thread(target=playSuccessParent).start()
+                    Thread(target=playSuccess).start()
                     Thread(target=updateFirebase(firebaseID)).start()
             else:
                 playError()
@@ -411,7 +388,7 @@ try:
             #print ("Current Screen: {}".format(currentScreen))
 
             if currentScreen == 0:
-                    Thread(target=playSuccessParent).start()
+                    Thread(target=playSuccess).start()
                     Thread(target=updateFirebase(firebaseID)).start()
             else:
                 playError()
@@ -424,7 +401,7 @@ try:
             #print ("Current Screen: {}".format(currentScreen))
 
             if currentScreen == 17:
-                Thread(target=playSuccessEmployee).start()
+                Thread(target=playSuccess).start()
                 Thread(target=updateFirebase(firebaseID)).start()
             else:
                 playError()
@@ -443,8 +420,9 @@ try:
             
 
 finally:
+        colorWipe(strip, Color(0,0,0))
         GPIO.cleanup()
-        colorWipe(strip, Color(0,0,0), 10)
+        
         
 
 

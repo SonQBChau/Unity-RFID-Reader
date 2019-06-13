@@ -11,6 +11,7 @@ import os
 import pyrebase
 from threading import Thread
 import threading
+import sys
 
 # LED strip configuration:
 LED_COUNT      = 93      # Number of LED pixels.
@@ -420,8 +421,9 @@ try:
             
 
 finally:
-        colorWipe(strip, Color(0,0,0))
-        GPIO.cleanup()
+    colorWipe(strip, Color(0,0,0))
+    GPIO.cleanup()
+    sys.exit()
         
         
 

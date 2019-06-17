@@ -75,6 +75,7 @@ class IdleLightThread(object):
     The run() method will be started and it will run in the background
     until the application exits.
     """
+
     can_loop = True
     def __init__(self, interval=1):
         """ Constructor
@@ -86,7 +87,7 @@ class IdleLightThread(object):
         thread = Thread(target=self.run, args=())
         thread.daemon = True                            # Daemonize thread
         thread.start()                                  # Start the execution
-
+    
     def run(self):
         """ Method that runs forever """
         #while True:
@@ -97,6 +98,7 @@ class IdleLightThread(object):
         speedDelay = 30
         returnDelay = 100
         i = 0
+
         
         while i < rangeEye:
             if self.can_loop:
@@ -197,6 +199,7 @@ def redFadeOut():
         color = Color(0, k*10, 0)
         colorWipe(strip, color)
         time.sleep(5/1000.0)
+    colorWipe(strip, Color(0,0,0))
 
 def greenFadeOut():
     # show light on
@@ -275,8 +278,8 @@ def playError():
     print ('error sound....')
     soundError.play()
     playLightError()
-    sleep(1)
-    soundError.stop()
+    #sleep(1)
+    #soundError.stop()
 
 def playLightSuccess():
     print ('success color....')
@@ -289,6 +292,7 @@ def playLightError():
     
     idleLight.can_loop = False
     redFadeOut()
+    #sleep(0.8)
     idleLight.can_loop = True
 
 def playLightSuccessEmployee():
@@ -354,7 +358,7 @@ try:
             else:
                 # wrong app screen while sliding RFID
                 playError()
-            sleep(1)
+            #sleep(1)
 
         #elif id == 853040429192: # REPLACE THIS WITH THE ID CARD FOR CHILD CHECKOUT
         elif id == 317068237436:
@@ -368,7 +372,7 @@ try:
             else:
                 # wrong app screen while sliding RFID
                 playError()
-            sleep(1)
+            #sleep(1)
                                 
         #elif id == 225094668797: # REPLACE THIS WITH THE ID CARD FOR PARENT
         elif id == 768876878351:
@@ -381,7 +385,7 @@ try:
                     Thread(target=updateFirebase(firebaseID)).start()
             else:
                 playError()
-            sleep(1)
+            #sleep(1)
             
         elif id == 1011973426216: # PARENT IOS
             firebaseID = '1011973426216' # PARENT ID
@@ -393,7 +397,7 @@ try:
                     Thread(target=updateFirebase(firebaseID)).start()
             else:
                 playError()
-            sleep(1)
+            #sleep(1)
             
         #elif id == 225111446012: # REPLACE THIS WITH THE ID CARD FOR EMPLOYEE
         elif id == 872787545537:
@@ -406,7 +410,7 @@ try:
                 Thread(target=updateFirebase(firebaseID)).start()
             else:
                 playError()
-            sleep(1)
+            #sleep(1)
 
   
             
@@ -414,7 +418,7 @@ try:
             
         else: # ANY OTHER CARDS WILL MAKE IT INVALID
             playError()
-            sleep(1)
+            #sleep(1)
             #print("Playing Light Test...")
             #playLightTest()
             #playSoundTest()

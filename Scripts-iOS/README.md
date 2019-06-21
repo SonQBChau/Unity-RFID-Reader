@@ -2,7 +2,11 @@
 
 
 Download GoogleService-Info and put it in Assets folder
+
+
 Might want to import Firebase again
+
+Copy the FirebaseDatabase.dll in Assets/Firebase/Plugins and replace the one in Mono
 
 
 # To build iOS app from Unity

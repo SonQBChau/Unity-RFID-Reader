@@ -1,3 +1,9 @@
+# Import Project from zip file
+
+
+Download GoogleService-Info and put it in Assets folder
+Might want to import Firebase again
+
 
 # To build iOS app from Unity
 

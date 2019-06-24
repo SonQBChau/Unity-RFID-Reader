@@ -16,27 +16,34 @@ using UnityEngine.UI;
 using Firebase;
 using Firebase.Database;
 
+[System.Serializable]
 public class ChangeScene : MonoBehaviour 
 {
-    public bool fadeScene;
+    public enum Transition
+    {
+        FadeInScene,
+        FadeOutScene,
+        SlideSceneOut,
+        SlideSceneIn,
+        BackSceneOut,
+        MultiSceneBackOut,
+        MultiSceneBackOutFade,
+        MultiSceneBackOutSlide
+    }
 
-    public bool fadeOutScene;
+    public Transition transition;
 
-    public bool slideSceneOut;
-
-    public bool backSceneOut;
-
-    public bool multiSceneBackOut;
+    public bool vertical;
 
     public int sceneNum;
 
     public int[] multiSceneNum;
 
-    public Button button;
+    Button button;
 
-    public SceneFlow sceneFlow;
+    SceneFlow sceneFlow;
 
-     public FirebaseAPI firebase;
+    public FirebaseAPI firebase;
 
 	// Use this for initialization
 	void Start () 
@@ -49,65 +56,56 @@ public class ChangeScene : MonoBehaviour
 	
 	void SceneChange()
     {
-        //Debug.Log("Scene change: " + sceneNum);
-
-        if(fadeScene && !fadeOutScene && !slideSceneOut)
+        switch (transition)
         {
-            sceneFlow.FadeSceneIn(sceneNum);
+            case Transition.FadeInScene:
+                sceneFlow.FadeSceneIn(sceneNum);
+                break;
+
+            case Transition.FadeOutScene:
+                sceneFlow.FadeSceneOut(sceneNum);
+                break;
+
+            case Transition.SlideSceneIn:
+                sceneFlow.SlideSceneIn(sceneNum, vertical);
+                break;
+
+            case Transition.SlideSceneOut:
+                sceneFlow.SlideSceneOut(sceneNum, vertical);
+                break;
+
+            case Transition.BackSceneOut:
+                sceneFlow.KillCard(sceneNum);
+                break;
+
+            case Transition.MultiSceneBackOut:
+                foreach (int num in multiSceneNum)
+                {
+                    sceneFlow.KillCard(num);
+                }
+                break;
+
+            case Transition.MultiSceneBackOutFade:
+                foreach (int num in multiSceneNum)
+                {
+                    sceneFlow.FadeSceneOut(num);
+                }
+                break;
+
+            case Transition.MultiSceneBackOutSlide:
+                foreach (int num in multiSceneNum)
+                {
+                    sceneFlow.SlideSceneOut(num, vertical);
+                }
+                break;
+
+            default:
+                break;
         }
 
-        if(!fadeScene && !fadeOutScene && !slideSceneOut)
-        {
-            sceneFlow.SlideSceneIn(sceneNum);
-        }
-
-        if(!fadeScene && fadeOutScene && !slideSceneOut)
-        {
-            sceneFlow.FadeSceneOut(sceneNum);
-        }
-
-        if(!fadeScene && !fadeOutScene && slideSceneOut)
-        {
-            sceneFlow.SlideSceneOut(sceneNum);
-
-            if(sceneNum <= 2)
-            {
-                sceneFlow.currentPage = 0;
-            }
-        }
-
-        if(backSceneOut)
-        {
-            sceneFlow.KillCard(sceneNum);
-        }
-
-        if(multiSceneBackOut && !fadeOutScene && !slideSceneOut)
-        {
-            foreach(int num in multiSceneNum)
-            {
-                sceneFlow.KillCard(num);
-            }
-
-            sceneFlow.currentPage = sceneNum;
-        }
-
-        if (multiSceneBackOut && fadeOutScene)
-        {
-            foreach (int num in multiSceneNum)
-            {
-                sceneFlow.FadeSceneOut(num);
-            }
-        }
-
-        if(multiSceneBackOut && slideSceneOut)
-        {
-            foreach (int num in multiSceneNum)
-            {
-                sceneFlow.SlideSceneOut(num);
-            }
-        }
-
-          //everytime we change screen, we update the current screen to database, so the RPI will know which page we are on
+                 //everytime we change screen, we update the current screen to database, so the RPI will know which page we are on
+                 Debug.Log(sceneFlow);
+                 Debug.Log(sceneFlow.currentPage);
         firebase.updateScreenPage(sceneFlow.currentPage);
     }
 }

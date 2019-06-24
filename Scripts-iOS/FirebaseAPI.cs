@@ -91,8 +91,8 @@ public class FirebaseAPI : MonoBehaviour
             Debug.LogError(args.DatabaseError.Message);
             return;
         }
-        Debug.Log("Current Page: " + sceneFlow.currentPage);
-        Debug.Log(args.Snapshot.GetRawJsonValue());
+        // Debug.Log("Current Page: " + sceneFlow.currentPage);
+        // Debug.Log(args.Snapshot.GetRawJsonValue());
 
         // if (sceneFlow.currentPage == 30 || 
         //     sceneFlow.currentPage == 31 || 
@@ -100,7 +100,7 @@ public class FirebaseAPI : MonoBehaviour
         //     sceneFlow.currentPage == 18 ||
         //     sceneFlow.currentPage == 17
         //     ) //only check if user at page 1.1, 2.1, 2.2, 3.2, 3.3
-        if (sceneFlow.currentPage == 0 ) 
+        if (sceneFlow.currentPage == 0 || sceneFlow.currentPage == 8 ) 
         {
             if (args.Snapshot != null && args.Snapshot.ChildrenCount > 0)
             {
@@ -116,98 +116,29 @@ public class FirebaseAPI : MonoBehaviour
                     {   // If read value = 1, a new RFID just scanned from the RPI
                         if (childSnapshot.Child("Read").Value.ToString() == "1")
                         {
-                            // 165068935866: CHILD CHECKIN
-                            // 853040429192: CHILD CHECKOUT
-                            // 225111446012: EMPLOYEE
-                            // 225094668797: PARENT     
-
-                        
-                            //Debug.Log(childSnapshot.Child("Parent").Value.ToString());
-                            //Debug.Log(childSnapshot.Child("Child").Value.ToString());
-                            //Debug.Log(childSnapshot.Child("Read").Value.ToString());
-                            //do something here, for example set active for gameobject
-
-
-                            //Figure out how to launch different scenes based on values, one for child, one for parent. The methods are below
-
-
-                 
-
-/* 
-                            // if this is child card, from 3.2 navigate to 3.1.1 screen
-                            if (childSnapshot.Key == "165068935866" && sceneFlow.currentPage == 30)
-                            {
-                                Debug.Log("switch to page 28");
+                            if(sceneFlow.currentPage == 0){
+                                Debug.Log("Switch to page 5");
                                 RunOnMainThread<int>(() => {
-                                    sceneFlow.FadeSceneOut(30);
-                                    sceneFlow.FadeSceneIn(28);
-                                    updateScreenPage(28);
-                                    return 0;
+                                // sceneFlow.FadeSceneIn(5);
+                                // sceneFlow.FadeSceneOut(0);
+                                sceneFlow.SlideSceneIn(5, false);
+                                updateScreenPage(5);
+                                return 0;
                                 });
-                     
                             }
-                            // if this is child card, from 3.3 navigate to 3.1.2 screen
-                            if (childSnapshot.Key == "853040429192" && sceneFlow.currentPage == 31)
-                            {
-                                Debug.Log("switch to page 29");
+                            else if (sceneFlow.currentPage == 8){
+                                Debug.Log("Switch to page 6");
                                 RunOnMainThread<int>(() => {
-                                    sceneFlow.FadeSceneOut(31);
-                                    sceneFlow.FadeSceneIn(29);
-                                    updateScreenPage(29);
-                                    return 0;
+                                sceneFlow.FadeSceneIn(6);
+                                sceneFlow.FadeSceneOut(8);
+                                // sceneFlow.SlideSceneIn(6, false);
+                                updateScreenPage(6);
+                                return 0;
                                 });
+                            }
+                            
                                 
-                            }
-
-
-                            // if this is parent card, from 1.1 navigate to 1.3 screen
-                            if (childSnapshot.Key == "225094668797" && sceneFlow.currentPage == 1)
-                            {
-                                Debug.Log("Switch to page 2");
-                                RunOnMainThread<int>(() => {
-                                    sceneFlow.FadeSceneIn(2);
-                                    updateScreenPage(2);
-                                    return 0;
-                                });
-                                
-                            }
-                            // if this is parent card, from 2.2 navigate to 3.1 screen
-                            if (childSnapshot.Key == "225094668797" && sceneFlow.currentPage == 18)
-                            {
-                                Debug.Log("Switch to page 27");
-                                RunOnMainThread<int>(() => {
-                                    sceneFlow.FadeSceneIn(27);
-                                    updateScreenPage(27);
-                                    return 0;
-                                });
-                                
-                            }
-
-                            // if this is employee card, from 2.1 navigate to 2.2 screen
-                            if (childSnapshot.Key == "225111446012" && sceneFlow.currentPage == 17)
-                            {
-                                Debug.Log("Switch to page 18");
-                                RunOnMainThread<int>(() => {
-                                    sceneFlow.FadeSceneIn(18);
-                                    updateScreenPage(18);
-                                    return 0;
-                                });
-                                
-                            }
-*/
-
-
-                            // if this is parent card, navigate from Scene 0 to 3
-                            if (childSnapshot.Key == "225094668797" && sceneFlow.currentPage == 0)
-                            {
-                                Debug.Log("Switch to page 3");
-                                RunOnMainThread<int>(() => {
-                                    sceneFlow.FadeSceneIn(3);
-                                    updateScreenPage(3);
-                                    return 0;
-                                });
-                                
-                            }
+                            
 
                             //update child read back to 0 after the app use it, also set correctCard true or false
                             updateChild(childSnapshot.Key);
@@ -234,8 +165,6 @@ public class FirebaseAPI : MonoBehaviour
         FirebaseDatabase.DefaultInstance
             .GetReference("CurrentScreen")
             .SetValueAsync(screenPage);
-        Debug.Log("====================");
-        Debug.Log(screenPage);
     }
 
 

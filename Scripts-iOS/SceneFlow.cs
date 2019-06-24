@@ -21,16 +21,41 @@ public class SceneFlow : MonoBehaviour
 
     public int currentPage;
 
-    public void SlideSceneIn(int num)
+    public void SlideSceneIn(int num, bool vertical)
     {
-        scenes[num].gameObject.SetActive(true);
-        scenes[num].rectTransform.DOAnchorPosY(0, 0.5f);
+        if (vertical)
+        {
+            scenes[num].gameObject.SetActive(true);
+            scenes[num].rectTransform.DOAnchorPosY(0, 0.5f);
+        }
+
+        else
+        {
+            scenes[num].gameObject.SetActive(true);
+            scenes[num].rectTransform.DOAnchorPosX(0, 0.5f);
+        }
         currentPage = num;
     }
 
-    public void SlideSceneOut(int num)
+    public void SlideSceneOut(int num, bool vertical)
     {
-        scenes[num].rectTransform.DOAnchorPosY(-2048, 0.5f).OnComplete(() => KillCard(num));
+        if (vertical)
+        {
+#if UNITY_IOS
+            scenes[num].rectTransform.DOAnchorPosY(-2224, 0.5f).OnComplete(() => KillCard(num));
+#else
+            scenes[num].rectTransform.DOAnchorPosY(-1920, 0.5f).OnComplete(() => KillCard(num));
+#endif
+        }
+
+        else
+        {
+#if UNITY_IOS
+            scenes[num].rectTransform.DOAnchorPosX(1668, 0.5f).OnComplete(() => KillCard(num));
+#else
+            scenes[num].rectTransform.DOAnchorPosX(-1200, 0.5f).OnComplete(() => KillCard(num));
+#endif
+        }
     }
 
     public void FadeSceneIn(int num)
